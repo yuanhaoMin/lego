@@ -1,0 +1,3 @@
+update_bearing_orders_cost_and_calculate_total_cost {
+This function updates the cost of all orders that contain the word "轴承" in their product name by adding 300 to their original cost, and then calculates the total cost of all these orders by multiplying the updated cost by their quantity and summing them up. The function returns the total cost and also prints it to the console.
+}
