@@ -13,21 +13,21 @@ class FrontendOperationParam(Enum):
 
     SEARCH_SMART_INSPECTION_PARAM = (
         "searchSmartInspectionParam",
-        "搜索/查找 巡检记录",
+        "搜索/查找 巡检 记录",
         FrontendOperation.MANAGE_SMART_INSPECTION.function_name,
         frontend_operation_param_prompt.SEARCH_SMART_INSPECTION_PARAM,
     )
 
     ADD_FENCE_STRATEGY_PARAM = (
         "addFenceStrategyParam",
-        "告警用户, 告警配置, 围栏代码, 有效时间, 开始时间, 结束时间, 策略行为, 告警级别, 策略描述, 围栏策略名称, 关联用户, 重复日期, 工作日",
+        "设置 推送用户, 告警配置, 围栏代码, 有效时间, 开始时间, 结束时间, 策略行为, 告警级别, 策略描述, 围栏策略名称, 关联用户, 重复日期, 工作日",
         FrontendOperation.ADD_FENCE_STRATEGY.function_name,
         frontend_operation_param_prompt.ADD_FENCE_STRATEGY_PARAM,
     )
 
     ADD_INSPECTION_STRATEGY_PARAM = (
         "addInspectionStrategyParam",
-        "巡检名称, 是否重复, 有效时间从xx点开始到xx点结束, 是否有序, 选择人员, 选择围栏, 重复日期, 工作日",
+        "设置 巡检策略名称, 是否重复, 有效时间从xx点开始到xx点结束, 停留时间, 是否有序, 选择人员, 选择围栏, 重复日期, 工作日",
         FrontendOperation.ADD_INSPECTION_STRATEGY.function_name,
         frontend_operation_param_prompt.ADD_INSPECTION_STRATEGY_PARAM,
     )

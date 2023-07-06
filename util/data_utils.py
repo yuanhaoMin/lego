@@ -21,6 +21,8 @@ def replace_keywords(text: str):
         "委栏": "围栏",
         "寻检": "巡检",
         "询检": "巡检",
+        "悬检": "巡检",
+        "寻街": "巡检",
     }
     for key, value in keyword_dict.items():
         text = text.replace(key, value)

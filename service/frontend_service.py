@@ -39,6 +39,37 @@ def determine_function(
 def determine_function_and_param(
     operation: FrontendOperationParam, operation_text: str
 ):
+    # 确认或返回等简短操作
+    if len(operation_text) <= 3:
+        user_message_content = """
+        Based on the user input, you need to decide the operation type and give a JSON output.
+        For example, if the user input is '确认' or something similar to confirmation, you need to return the following JSON:
+        {
+            "function_name": "submit",
+            "function_level": 2,
+        }
+        If the user input is '返回' or something similar to cancellation, you need to return the following JSON:
+        {
+            "function_name": "cancel",
+            "function_level": 2,
+        }
+        But if the user input has other meanings, you need to return the following JSON:
+        {
+            "function_name": "unknown",
+            "function_level": 2,
+        }
+        """
+        user_message_content += "Here is the user input: " + operation_text
+        parameter_json = completion([HumanMessage(content=user_message_content)])
+        try:
+            data = fix_and_parse_json(parameter_json)
+            if data["function_name"] != "unknown":
+                return data
+        except Exception:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Failed to parse parameters '{parameter_json}' for the operation '{operation.function_name}'",
+            )
     system_message = SystemMessage(content=operation.param_prompt)
     user_message = HumanMessage(content=operation_text)
     parameter_json = completion([system_message, user_message])
@@ -49,7 +80,7 @@ def determine_function_and_param(
             "data": data,
             "function_level": 2,
         }
-    except Exception as e:
+    except Exception:
         raise HTTPException(
             status_code=400,
             detail=f"Failed to parse parameters '{parameter_json}' for the operation '{operation.function_name}'",

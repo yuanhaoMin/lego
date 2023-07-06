@@ -22,6 +22,8 @@ class DetermineFunctionRequest(BaseModel):
 async def determine_function(
     request: DetermineFunctionRequest, client: Client = Depends(get_client)
 ):
+    request.last_operation = request.last_operation or EMPTY_OPERATION
+    request.require_param = request.require_param or False
     return frontend_service.determine_function(
         request.operation_text, request.last_operation, request.require_param, client
     )
