@@ -40,7 +40,7 @@ def determine_function_and_param(
     operation: FrontendOperationParam, operation_text: str
 ):
     # 确认或返回等简短操作
-    if len(operation_text) <= 3:
+    if len(operation_text) <= 4:
         user_message_content = """
         Based on the user input, you need to decide the operation type and give a JSON output.
         For example, if the user input is '确认', '保存' or something similar to confirmation/save, you need to return the following JSON:
