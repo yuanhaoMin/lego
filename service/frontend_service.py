@@ -43,12 +43,12 @@ def determine_function_and_param(
     if len(operation_text) <= 3:
         user_message_content = """
         Based on the user input, you need to decide the operation type and give a JSON output.
-        For example, if the user input is '确认' or something similar to confirmation, you need to return the following JSON:
+        For example, if the user input is '确认', '保存' or something similar to confirmation/save, you need to return the following JSON:
         {
             "function_name": "submit",
             "function_level": 2,
         }
-        If the user input is '返回' or something similar to cancellation, you need to return the following JSON:
+        If the user input is '返回', '退出' or something similar to cancellation/exit, you need to return the following JSON:
         {
             "function_name": "cancel",
             "function_level": 2,

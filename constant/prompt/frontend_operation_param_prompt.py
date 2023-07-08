@@ -61,7 +61,7 @@ ADD_FENCE_STRATEGY_PARAM = (
 ```
 alarmUser; string; null; 推送用户Id; "152"
 config; string; null; 告警配置Id; "1"
-fenceName; string; null; 有效区域, 前台, 会议室; "前台"
+fenceName; string; null; 有效区域, 前台/会议室/仓储室; "前台"
 forbidden; int; null; 策略行为Id; 0
 level; int; null; 告警级别; 1
 strategyName; string; null; 策略名称; "会议室区域策略"
@@ -87,6 +87,7 @@ config; configName
 fenceName(Enum)
 前台
 会议室
+仓储室
 
 forbidden; forbiddenName
 0; 禁止进入
@@ -98,9 +99,9 @@ level; levelName
 2; 严重
 
 strategyUserId; strategyUserName
-100; qk科技
-200; 全厂
-300; 办公楼区
+100; 研发部
+200; 人事部
+300; 产品部
 """
     + JSON_TEMPLATE_MIDDLE
     + """
@@ -167,6 +168,20 @@ Output:
   "onceFinishTime": null,
   "startTime": "20:00",
   "finishTime": "21:30"
+}
+Input: 重复改为不重复
+{
+  "patrolName": null,
+  "personIds": null,
+  "fenceIds": null,
+  "passDotCount": null,
+  "sortFlag": null,
+  "repeatType": 0,
+  "timeValue": null,
+  "onceStartTime": null,
+  "onceFinishTime": null,
+  "startTime": null,
+  "finishTime": null
 }
 """
     + JSON_TEMPLATE_END
