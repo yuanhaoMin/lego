@@ -3,17 +3,30 @@ from config.vectordb_config import FRONTEND_OPERATION_COLLECTION
 from constant.frontend_operation_enum import EMPTY_OPERATION, FrontendOperation
 from constant.frontend_operation_param_enum import FrontendOperationParam
 from fastapi import HTTPException
-from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.schema import HumanMessage, SystemMessage
 from util.json_utils import fix_and_parse_json
-from util.openai_utils import completion
+from util.openai_utils import completion, embedding
 
 
 def determine_function(
     operation_text: str, last_operation: str, require_param: bool, client: Client
 ) -> str:
+    confirm_words = ["确认", "提交"]
+    cancel_words = ["取消", "返回"]
+    if any(word in operation_text for word in confirm_words):
+        return {
+            "function_name": "submit",
+            "function_level": 2,
+        }
+    elif any(word in operation_text for word in cancel_words):
+        return {
+            "function_name": "cancel",
+            "function_level": 2,
+        }
+
     collection = client.get_collection(FRONTEND_OPERATION_COLLECTION)
-    query_embeddings = OpenAIEmbeddings().embed_documents([operation_text])
+
+    query_embeddings = embedding([operation_text])
     results = collection.query(
         n_results=1,
         query_embeddings=query_embeddings,
@@ -39,37 +52,6 @@ def determine_function(
 def determine_function_and_param(
     operation: FrontendOperationParam, operation_text: str
 ):
-    # 确认或返回等简短操作
-    if len(operation_text) <= 4:
-        user_message_content = """
-        Based on the user input, you need to decide the operation type and give a JSON output.
-        For example, if the user input is '确认', '保存' or something similar to confirmation/save, you need to return the following JSON:
-        {
-            "function_name": "submit",
-            "function_level": 2,
-        }
-        If the user input is '返回', '退出' or something similar to cancellation/exit, you need to return the following JSON:
-        {
-            "function_name": "cancel",
-            "function_level": 2,
-        }
-        But if the user input has other meanings, you need to return the following JSON:
-        {
-            "function_name": "unknown",
-            "function_level": 2,
-        }
-        """
-        user_message_content += "Here is the user input: " + operation_text
-        parameter_json = completion([HumanMessage(content=user_message_content)])
-        try:
-            data = fix_and_parse_json(parameter_json)
-            if data["function_name"] != "unknown":
-                return data
-        except Exception:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Failed to parse parameters '{parameter_json}' for the operation '{operation.function_name}'",
-            )
     system_message = SystemMessage(content=operation.param_prompt)
     user_message = HumanMessage(content=operation_text)
     parameter_json = completion([system_message, user_message])

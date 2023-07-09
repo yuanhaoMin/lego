@@ -12,8 +12,7 @@ router = APIRouter(
 @router.post("/openai/transcription")
 async def openai_audio_transcribe(audio_file: UploadFile):
     headers = {"Authorization": f"Bearer {get_openai_key()}"}
-    prompt = """"The scenario is industrie. Following words are common: 围栏, 巡检'"
-    """
+    prompt = "围栏,巡检"
     response = requests.post(
         "https://api.openai.com/v1/audio/transcriptions",
         data={

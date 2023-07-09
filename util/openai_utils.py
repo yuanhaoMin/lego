@@ -3,7 +3,7 @@ from config.api_config import get_openai_key
 from fastapi import HTTPException
 from langchain.chat_models import openai
 from langchain.schema import BaseMessage
-from openai import ChatCompletion
+from openai import ChatCompletion, Embedding
 
 logger = logging.getLogger(__name__)
 
@@ -35,8 +35,31 @@ def completion(messages: list[BaseMessage]):
             if retry_count > max_retries:
                 raise HTTPException(
                     status_code=504,
-                    detail=f"Failed to get response from OpenAI API after {max_retries} retries. Error: {e}",
+                    detail=f"Failed to get completion response from OpenAI API after {max_retries} retries. Error: {e}",
                 )
             else:
-                logger.warning("Failed to get response from OpenAI API. Retrying...")
+                logger.warning(
+                    "Failed to get completion response from OpenAI API. Retrying..."
+                )
+                continue
+
+
+def embedding(input: list[str]):
+    retry_count = 0
+    max_retries = 2
+    while True:
+        try:
+            response = Embedding.create(input=input, model="text-embedding-ada-002")
+            return response["data"][0]["embedding"]
+        except Exception as e:
+            retry_count += 1
+            if retry_count > max_retries:
+                raise HTTPException(
+                    status_code=504,
+                    detail=f"Failed to get embedding response from OpenAI API after {max_retries} retries. Error: {e}",
+                )
+            else:
+                logger.warning(
+                    "Failed to get embedding response from OpenAI API. Retrying..."
+                )
                 continue
